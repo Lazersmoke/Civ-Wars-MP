@@ -1,0 +1,280 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="mainstyle.css">
+<title>CW: From the Shadows</title>
+<script>
+
+var connection = new WebSocket('ws://localhost:8090', ['soap', 'xmpp']);
+connection.onmessage= function(e){
+console.log('Got: '+e.data+'\n')
+if(e.data=='sorry'){
+console.log('No availible slots\n')
+}
+if(e.data=='blue'){
+console.log('You are now blue team\n')
+player=1
+}
+if(e.data=='red'){
+console.log('You are now red team\n')
+player=2
+}
+if(e.data=='change'){
+console.log('Team already Taken\n')
+}
+if(e.data=='movealong'){
+console.log('OK, we proscessed your click\n')
+}
+if(String(e.data).length==300){
+var iteratorCat=0
+for(var x=0;x<5;x++){for(var y=0;y<5;y++){for(var z=0;z<4;z++){
+gameBoard[x][y][z]=Number(String(e.data).slice(iteratorCat,iteratorCat+3))
+iteratorCat+=3
+}}}
+
+drawBoard();
+}
+}
+
+var player=0
+var selected=[0,0,0]
+var gameBoard=[
+[
+[1,5,5,3],[0,0,3,3],[0,0,1,5],[0,0,1,5],[0,0,0,1]
+]
+,
+[
+[0,0,3,3],[0,0,2,4],[0,0,3,2],[0,0,2,3],[0,0,1,5]
+]
+,
+[
+[0,0,1,5],[0,0,3,3],[0,0,5,1],[0,0,3,3],[0,0,1,5]
+]
+,
+[
+[0,0,1,5],[0,0,2,3],[0,0,3,2],[0,0,2,4],[0,0,3,3]
+]
+,
+[
+[0,0,0,1],[0,0,1,5],[0,0,1,5],[0,0,3,3],[2,5,5,3]
+]
+
+]
+
+
+function sendCoords(e){
+
+var sendedX=String(e.clientX)
+if(sendedX.length==2){sendedX='0'+sendedX}
+if(sendedX.length==1){sendedX='00'+sendedX}
+var sendedY=String(e.clientY)
+if(sendedY.length==2){sendedY='0'+sendedY}
+if(sendedY.length==1){sendedY='00'+sendedY}
+
+if(selected[2]==1){
+var sendedArmy=String(prompt('How many soldiers?',String(Math.floor(gameBoard[selected[0]][selected[1]][1]/2))))
+if(sendedArmy.length==2){sendedArmy='0'+sendedArmy}
+if(sendedArmy.length==1){sendedArmy='00'+sendedArmy}
+}
+else{var sendedArmy='000';}
+
+if(player==1){
+connection.send(sendedX+sendedY+sendedArmy+'b')
+}
+if(player==2){
+connection.send(sendedX+sendedY+sendedArmy+'r')
+}
+
+if(selected[2]==0){
+selected=[getArrayCoords(e.clientX-9,e.clientY-9)[0],getArrayCoords(e.clientX-9,e.clientY-9)[1],1]
+drawBoard()
+}
+else if(selected[2]==1){
+selected[2]=0
+drawBoard()
+}
+
+}
+
+function checkLose(side){
+var loser=1;
+for(var xx=0;xx<5;xx++){
+for(var yy=0;yy<5;yy++){
+if(gameBoard[xx][yy][0]==side){
+loser=0;
+}}}
+return Boolean(loser)
+}
+
+function getCanvasCoords(x,y){
+return [x*100,y*100,(x+1)*100,(y+1)*100]
+}
+
+function getArrayCoords(x,y){
+return [Math.floor(x/100),Math.floor(y/100)]
+}
+
+function drawBoard(){
+//erase
+theCanvas.width=theCanvas.width
+var coords;
+//loop through all sqaures
+for(var x=0;x<5;x++){
+for(var y=0;y<5;y++){
+
+//if its blue
+if(gameBoard[x][y][0]==1 && checkContingent(x,y,player,1)){
+coords=getCanvasCoords(x,y)
+
+//make space blue
+ctx.fillStyle="#00007F"
+ctx.fillRect(coords[0],coords[1],coords[2],coords[3])
+
+//and put a blue number
+ctx.font="30px Georgia"
+ctx.fillStyle="#0000FF"
+ctx.fillText(String(gameBoard[x][y][1]),coords[0],coords[1]+20)
+
+}
+//if its red
+else if(gameBoard[x][y][0]==2 && checkContingent(x,y,player,1)){
+coords=getCanvasCoords(x,y)
+
+//make space red
+ctx.fillStyle="#7F0000"
+ctx.fillRect(coords[0],coords[1],coords[2],coords[3])
+
+//and put a red number
+ctx.font="30px Georgia"
+ctx.fillStyle="#FF0000"
+ctx.fillText(String(gameBoard[x][y][1]),coords[0],coords[1]+20)
+}
+
+//if its unowned
+else if(gameBoard[x][y][0]==0 && checkContingent(x,y,player,1)){
+coords=getCanvasCoords(x,y)
+
+//make space gray
+ctx.fillStyle="#3F3F3F"
+ctx.fillRect(coords[0],coords[1],coords[2],coords[3])
+}
+
+else{
+coords=getCanvasCoords(x,y)
+
+//make space gray
+ctx.fillStyle="#000000"
+ctx.fillRect(coords[0],coords[1],coords[2],coords[3])
+}
+
+//and show production and ttg
+if(checkContingent(x,y,player,1)){
+coords=getCanvasCoords(x,y)
+ctx.font="30px Georgia"
+ctx.fillStyle="#007F00"
+ctx.fillText(String(gameBoard[x][y][2]),coords[0]+2,coords[1]+90)
+ctx.fillText(String(gameBoard[x][y][3]),coords[0]+80,coords[1]+90)
+ctx.strokeStyle="#000000"
+ctx.strokeRect(coords[0],coords[1],coords[2],coords[3])
+}
+
+if(selected[0]==x && selected[1]==y && selected[2]==1){
+coords=getCanvasCoords(x,y)
+var grd=ctx.createRadialGradient(50+coords[0],50+coords[1],10,50+coords[0],50+coords[1],50);
+grd.addColorStop(0,"yellow");
+grd.addColorStop(1,"rgba(0,0,0,0)");
+ctx.fillStyle=grd
+
+ctx.fillRect(coords[0],coords[1],coords[2],coords[3])
+delete grd
+}}}}
+
+function checkContingent(x,y,reqOwner,useCorner){
+if(useCorner==null){useCorner=0;}
+var doup=1
+var dodown=1
+var doleft=1
+var doright=1
+if(x==0){doleft=0;}
+if(x==4){doright=0;}
+if(y==0){doup=0;}
+if(y==4){dodown=0;}
+
+var result=0
+
+if(doup){
+result=(result || gameBoard[x][y-1][0]==reqOwner)
+}
+if(dodown){
+result=(result || gameBoard[x][y+1][0]==reqOwner)
+}
+if(doleft){
+result=(result || gameBoard[x-1][y][0]==reqOwner)
+}
+if(doright){
+result=(result || gameBoard[x+1][y][0]==reqOwner)
+}
+result=(result || gameBoard[x][y][0]==reqOwner)
+if(doup && doleft && useCorner){
+result=(result || gameBoard[x-1][y-1][0]==reqOwner)
+}
+if(doup && doright && useCorner){
+result=(result || gameBoard[x+1][y-1][0]==reqOwner)
+}
+if(dodown && doleft && useCorner){
+result=(result || gameBoard[x-1][y+1][0]==reqOwner)
+}
+if(dodown && doright && useCorner){
+result=(result || gameBoard[x+1][y+1][0]==reqOwner)
+}
+
+
+
+return Boolean(result)
+}
+
+function EYT(){
+drawBoard();
+if(checkLose(1)){
+theCanvas.width=theCanvas.width;
+ctx.fillStyle="rgba(255,0,0,.7)";
+ctx.font="100px Georgia";
+ctx.fillRect(0,0,500,500);
+ctx.fillStyle="rgba(255,0,0,1)";
+ctx.fillText('Red Wins',0,100);
+}
+if(checkLose(2)){
+theCanvas.width=theCanvas.width;
+ctx.fillStyle="rgba(0,0,255,.7)";
+ctx.font="100px Georgia";
+ctx.fillRect(0,0,500,500);
+ctx.fillStyle="rgba(0,0,255,1)";
+ctx.fillText('Blue Wins',0,100)
+}
+if(player==1){
+connection.send('eytb')
+}
+if(player==2){
+connection.send('eytr')
+}
+}
+</script>
+</head>
+<body>
+<canvas width=500 height=500 id="game" onclick="sendCoords(event);">Your browser does not support the <b>canvas</b> element. Try <a href="www.google.com/chrome">Google Chrome</a>.</canvas>
+<div class="colored" style="position:fixed;top:9px;left:520px;width:300px;">
+<button onclick="EYT();" id="eytButton" style="color:blue;">End Your Turn</button>
+<p> <b> <i>How to play: </i> </b> <br>The goal of the game is to eliminate the other color. To do this, you must attack the other color's squares. In order to do <i>that</i>, you must have a bridge(per say) made of your own color. To create this bridge, you must expand into the gray spaces. This is done by left clicking one of your squares, then left clicking on an ajacent gray square. You will be asked how many troops to move, then they will move. You may do this as many times as you like on your turn, which is ended by clicking the End Your Turn button. When this happens, the button will change to the other color, and all of the controlled squares will increase their troop count by 1. If you attempt to move onto the other color's square, it will initiate a battle, in which the side with more troops wins, but subtracts troops, and the loser subtracts all of his/her troops.</p>
+</div>
+<div class="colored" style="position:fixed;top:31px;left:829px;width:300px;">
+<p> <b> <i>Expansion Info: </i> <br> In Civilization Wars: From the Shadows</b>, a new game mechanic is added that shrouds your en<!--Multiplayer coming soon! Promise!-->emy in the Fog of War. This has large strategic implementations, but only if your opponent does not watch you take your turn. For this reason very legitimate<sup> <i>[citation needed]</i> </sup> reason<sup> <i>[citation needed]</i> </sup>, internet<sup> <i>[citation needed]</i> </sup> multiplayer will<sup> <i>[citation needed]</i> </sup> be coming<sup> <i>[citation needed]</i> </sup> at some point<sup> <i>[citation needed]</i> </sup> in the <i>*cough* distant *cough*</i> future.</p>
+</div>
+<script>
+var theCanvas=document.getElementById("game")
+var ctx=theCanvas.getContext('2d')
+drawBoard();
+</script>
+<!--vvvv GitHub Banner vvvv-->
+<a href="https://github.com/techy1157"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
+<!--^^^^ GitHub Banner ^^^^-->
+</body>
+</html>
