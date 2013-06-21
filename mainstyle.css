@@ -1,0 +1,15 @@
+div.colored {color:#dd4814;}
+a:link {color:#ee5915;}      /* unvisited link */
+a:visited {color:#bb2600;}  /* visited link */
+a:hover {color:#dd4814;}  /* mouse over link */
+a:active {color:#cc3703;}  /* selected link */
+body{background-color: #3F003F;}
+div.middled{margin:auto;margin-left:auto;margin-right:auto;width:600px;text-align:center;}
+#navigate ul{list-style:none;padding:0;margin:0;}
+#navigate li{float:left;margin:0;}
+#navigate a{display:block;color: #ffffff;text-decoration: none;padding: 0px 5px;}
+#navigate a:hover{color: #dddddd;}
+#navigate #selected {font-weight: bold;background: url(images/active.jpg) no-repeat;}
+#catalog th{background-color:green;color:white;border:1px solid green;padding:5px;}
+#catalog td{background-color:#dd4814;border:1px solid green;padding:5px;}
+#catalog table{text-align:center;border:1px solid green;}
