@@ -227,6 +227,7 @@ redPro+=gameBoard[x][y][2]
 }}
 */
 if(turnmarker[0]&&turnmarker[1]){
+connection.sendUTF('turnedall')
 for(var x=0;x<5;x++){
 for(var y=0;y<5;y++){
 if(gameBoard[x][y][1]==0){

@@ -12,10 +12,12 @@ console.log('No availible slots\n')
 }
 if(e.data=='blue'){
 console.log('You are now blue team\n')
+document.getElementById('eytButton').style.color="blue"
 player=1
 }
 if(e.data=='red'){
 console.log('You are now red team\n')
+document.getElementById('eytButton').style.color="red"
 player=2
 }
 if(e.data=='change'){
@@ -23,6 +25,14 @@ console.log('Team already Taken\n')
 }
 if(e.data=='movealong'){
 console.log('OK, we proscessed your click\n')
+}
+if(e.data=='turnedall'){
+if(player==1){
+document.getElementById('eytButton').style.color="blue"
+}
+if(player==2){
+document.getElementById('eytButton').style.color="red"
+}
 }
 if(String(e.data).length==300){
 var iteratorCat=0
@@ -256,13 +266,14 @@ connection.send('eytb')
 if(player==2){
 connection.send('eytr')
 }
+document.getElementById('eytButton').style.color="yellow"
 }
 </script>
 </head>
 <body>
 <canvas width=500 height=500 id="game" onclick="sendCoords(event);">Your browser does not support the <b>canvas</b> element. Try <a href="www.google.com/chrome">Google Chrome</a>.</canvas>
 <div class="colored" style="position:fixed;top:9px;left:520px;width:300px;">
-<button onclick="EYT();" id="eytButton" style="color:blue;">End Your Turn</button>
+<button onclick="EYT();" id="eytButton" style="color:black;">End Your Turn</button>
 <button onclick="connection.send('blue');document.getElementById('blueButton').setAttribute('hidden','true');document.getElementById('redButton').setAttribute('hidden','true');" id="blueButton">Blue</button>
 <button onclick="connection.send('red');document.getElementById('redButton').setAttribute('hidden','true');document.getElementById('blueButton').setAttribute('hidden','true');" id="redButton">Red</button>
 <p> <b> <i>How to play: </i> </b> <br>The goal of the game is to eliminate the other color. To do this, you must attack the other color's squares. In order to do <i>that</i>, you must have a bridge(per say) made of your own color. To create this bridge, you must expand into the gray spaces. This is done by left clicking one of your squares, then left clicking on an ajacent gray square. You will be asked how many troops to move, then they will move. You may do this as many times as you like on your turn, which is ended by clicking the End Your Turn button. When this happens, the button will change to the other color, and all of the controlled squares will increase their troop count by 1. If you attempt to move onto the other color's square, it will initiate a battle, in which the side with more troops wins, but subtracts troops, and the loser subtracts all of his/her troops.</p>
