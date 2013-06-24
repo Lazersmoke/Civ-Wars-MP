@@ -71,9 +71,21 @@ wsServer.on('request', function(request) {
         if (message.type === 'utf8') {
             console.log('Received Message: ' + message.utf8Data);
 	    if(message.utf8Data=='blue' || message.utf8Data=='red'){
-	      if(blue==null && message.utf8Data=='blue'){blue=connection.remoteAddress;connection.sendUTF('blue');console.log('blue is '+blue)}
-	      else if(red==null && message.utf8Data=='red'){red=connection.remoteAddress;connection.sendUTF('red');console.log('red is '+red)}
-	      else if(blue!=null && red!=null){connection.sendUTF('sorry')}
+	      if(blue==null && message.utf8Data=='blue'){
+		blue=connection.remoteAddress;
+		connection.sendUTF('blue');
+		console.log('blue is '+blue)
+		updateClientBoard();
+	      }
+	      else if(red==null && message.utf8Data=='red'){
+		red=connection.remoteAddress;
+		connection.sendUTF('red');
+		console.log('red is '+red)
+		updateClientBoard();
+	      }
+	      else if(blue!=null && red!=null){
+		connection.sendUTF('sorry');
+	      }
 	      else{connection.sendUTF('change');}
 	    }
 	    
@@ -91,15 +103,38 @@ wsServer.on('request', function(request) {
 	      selectedR=selected
 	      connection.sendUTF('movealong')
 	    }
-	    if(message.utf8Data=='eytr'){turnmarker[1]=1;EYT();connection.sendUTF('turned');}
-	    if(message.utf8Data=='eytb'){turnmarker[0]=1;EYT();connection.sendUTF('turned');}
-	    var sendingData=''
-	    for(var x=0;x<5;x++){for(var y=0;y<5;y++){for(var z=0;z<4;z++){
-	      if(String(gameBoard[x][y][z]).length==2){sendingData+='0'+String(gameBoard[x][y][z])}
-	      else if(String(gameBoard[x][y][z]).length==1){sendingData+='00'+String(gameBoard[x][y][z])}
-	      else{sendingData+=String(gameBoard[x][y][z])}
-	    }}}
-	    connection.sendUTF(sendingData)
+	    if(message.utf8Data=='eytr'){
+	      turnmarker[1]=1;
+	      EYT();
+	      connection.sendUTF('turned');
+	    }
+	    if(message.utf8Data=='eytb'){
+	      turnmarker[0]=1;
+	      EYT();
+	      connection.sendUTF('turned');
+	      }    
+	    function updateClientBoard(){
+	      var sendingData=''
+	      for(var x=0;x<5;x++){for(var y=0;y<5;y++){for(var z=0;z<4;z++){
+		if(String(gameBoard[x][y][z]).length==2){sendingData+='0'+String(gameBoard[x][y][z])}
+		else if(String(gameBoard[x][y][z]).length==1){sendingData+='00'+String(gameBoard[x][y][z])}
+		else{sendingData+=String(gameBoard[x][y][z])}
+	      }}}
+	      connection.sendUTF(sendingData)
+	      
+	      var colors=['0','0']
+	      if(turnmarker[0]=1){colors[0]='1'}
+	      if(turnmarker[1]=1){colors[1]='1'}
+	      connection.sendUTF('color'+colors[0]+colors[1])
+	      
+	      if(turnmarker[0]&&turnmarker[1]){
+		turnmarker[0]=0
+		turnmarker[1]=0
+		console.log('just ended both turns!')
+	      }
+	      
+	      setTimeout(updateClientBoard,100)
+	    }
         }
     });
     connection.on('close', function(reasonCode, description) {
@@ -227,7 +262,6 @@ redPro+=gameBoard[x][y][2]
 }}
 */
 if(turnmarker[0]&&turnmarker[1]){
-connection.sendUTF('turnedall')
 for(var x=0;x<5;x++){
 for(var y=0;y<5;y++){
 if(gameBoard[x][y][1]==0){
@@ -245,8 +279,6 @@ gameBoard[x][y][3]=5
 }
 
 }}
-turnmarker[0]=0
-turnmarker[1]=0
 }
 }
 

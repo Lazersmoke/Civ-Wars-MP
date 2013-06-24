@@ -26,14 +26,6 @@ console.log('Team already Taken\n')
 if(e.data=='movealong'){
 console.log('OK, we proscessed your click\n')
 }
-if(e.data=='turnedall'){
-if(player==1){
-document.getElementById('eytButton').style.color="blue"
-}
-if(player==2){
-document.getElementById('eytButton').style.color="red"
-}
-}
 if(String(e.data).length==300){
 var iteratorCat=0
 for(var x=0;x<5;x++){for(var y=0;y<5;y++){for(var z=0;z<4;z++){
@@ -43,8 +35,21 @@ iteratorCat+=3
 
 drawBoard();
 }
+if(e.data.slice(0,4)=='color'){
+  if(e.data.slice(4+player,5+player)==0){
+    if(player==1){
+      document.getElementById('eytButton').style.color="blue"
+    }
+    if(player==2){
+      document.getElementById('eytButton').style.color="red"
+    }
+  }
+  else{
+  document.getElementById('eytButton').style.color="yellow"
+  }
 }
 
+}
 var player=0
 var selected=[0,0,0]
 var gameBoard=[
@@ -76,14 +81,17 @@ function sendCoords(e){
 var sendedX=String(e.clientX)
 if(sendedX.length==2){sendedX='0'+sendedX}
 if(sendedX.length==1){sendedX='00'+sendedX}
+if(sendedX=='null'){sendedX='000';}
 var sendedY=String(e.clientY)
 if(sendedY.length==2){sendedY='0'+sendedY}
 if(sendedY.length==1){sendedY='00'+sendedY}
+if(sendedY=='null'){sendedY='000';}
 
 if(selected[2]==1){
 var sendedArmy=String(prompt('How many soldiers?',String(Math.floor(gameBoard[selected[0]][selected[1]][1]/2))))
 if(sendedArmy.length==2){sendedArmy='0'+sendedArmy}
 if(sendedArmy.length==1){sendedArmy='00'+sendedArmy}
+if(sendedArmy=='null'){sendedArmy='000';}
 }
 else{var sendedArmy='000';}
 
