@@ -123,11 +123,11 @@ wsServer.on('request', function(request) {
 	      connection.sendUTF(sendingData)
 	      
 	      var colors=['0','0']
-	      if(turnmarker[0]=1){colors[0]='1'}
-	      if(turnmarker[1]=1){colors[1]='1'}
+	      if(turnmarker[0]==1){colors[0]='1'}
+	      if(turnmarker[1]==1){colors[1]='1'}
 	      connection.sendUTF('color'+colors[0]+colors[1])
 	      
-	      if(turnmarker[0]&&turnmarker[1]){
+	      if(turnmarker[0]==1 && turnmarker[1]==1){
 		turnmarker[0]=0
 		turnmarker[1]=0
 		console.log('just ended both turns!')
