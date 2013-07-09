@@ -7,3 +7,5 @@ The goal of the game is to eliminate the other color. To do this, you must attac
 In order to run this game, you must use a web browser that supports Websockets and the canvas element, like Chormium, to open CW.html.
 
 In order to make the server work, you must install node.js, and Worlize's WebSocket-Node
+
+Link to current client: <a href="http://htmlpreview.github.io/?https://github.com/techy1157/Civ-Wars-MP/blob/master/CWclient.html">Right Here</a>
