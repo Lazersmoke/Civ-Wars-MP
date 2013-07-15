@@ -290,3 +290,4 @@ selected=[selected[0],selected[1],0]
 }
 /*drawBoard()*/;
 }
+ 
