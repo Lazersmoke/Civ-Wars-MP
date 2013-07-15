@@ -1,6 +1,8 @@
-Civ-Wars-MP Beta!
-=================
+Civ-Wars-MP Dev!
+================
 
-This is the beta branch! Here you can find the hottest new working things! This will be merged onto the master (stable) branch when there are big changes i.e. x changes in x.y.z. In the same light, the dev branch will be merged onto here whenever it works. 
+Current Version:v2.0.0-dev
 
-Link to current client: <a href="http://htmlpreview.github.io/?https://github.com/techy1157/Civ-Wars-MP/blob/beta/CWclient.html">Right Here</a>
+This is the development branch! Here you can find the hottest new working things that don't work (garunteed)! This will be merged onto the beta branch whenever it works! Each push on this branch will add to the z in x.y.z
+
+Link to current client: <a href="http://htmlpreview.github.io/?https://github.com/techy1157/Civ-Wars-MP/blob/dev/CWclient.html">Right Here</a>
