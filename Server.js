@@ -7,8 +7,7 @@ var PORT=8090
 
 
 
-
-
+//[owner,strenghth,infrastructure,build progress]
 var blue=null;
 var red=null;
 var turnmarker=[0,0]
@@ -17,28 +16,28 @@ var selectedB=[0,0,0]
 var selectedR=[0,0,0]
 var gameBoard=[
 [
-[1,5,5,3],[0,0,3,3],[0,0,1,5],[0,0,1,5],[0,0,0,1]
+[1,5,1.0,0.0,function(){return;}],[0,0,0.8,0.1,function(){return;}],[0,0,0.4,0.2,function(){return;}],[0,0,0.2,0.2,function(){return;}],[0,0,0.1,2.0,function(){return;}]
 ]
 ,
 [
-[0,0,3,3],[0,0,2,4],[0,0,3,2],[0,0,2,3],[0,0,1,5]
+[0,0,0.8,0.1,function(){return;}],[0,0,0.4,0.2,function(){return;}],[0,0,0.2,0.2,function(){return;}],[0,0,0.1,2.0,function(){return;}],[0,0,0.2,0.2,function(){return;}]
 ]
 ,
 [
-[0,0,1,5],[0,0,3,3],[0,0,5,1],[0,0,3,3],[0,0,1,5]
+[0,0,0.4,0.2,function(){return;}],[0,0,0.2,0.2,function(){return;}],[0,0,1.0,2.0,function(){return;}],[0,0,0.2,0.2,function(){return;}],[0,0,0.4,0.2,function(){return;}]
 ]
 ,
 [
-[0,0,1,5],[0,0,2,3],[0,0,3,2],[0,0,2,4],[0,0,3,3]
+[0,0,0.2,0.2,function(){return;}],[0,0,0.1,2.0,function(){return;}],[0,0,0.2,0.2,function(){return;}],[0,0,0.4,0.2,function(){return;}],[0,0,0.8,0.1,function(){return;}]
 ]
 ,
 [
-[0,0,0,1],[0,0,1,5],[0,0,1,5],[0,0,3,3],[2,5,5,3]
+[0,0,0.1,2.0,function(){return;}],[0,0,0.2,0.2,function(){return;}],[0,0,0.4,0.2,function(){return;}],[0,0,0.8,0.1,function(){return;}],[2,5,1.0,0.0,function(){return;}]
 ]
 
 ]
-
-
+var boardsize='005005004' //don't include the mod function. also don't make values more that 4 chars when put in string
+var boardsizeArray=[Number(boardsize.slice(0,3)),Number(boardsize.slice(3,6)),Number(boardsize.slice(6,9))]
 
 
 var WebSocketServer = require('websocket').server;
@@ -75,12 +74,14 @@ wsServer.on('request', function(request) {
 		blue=connection.remoteAddress;
 		connection.sendUTF('blue');
 		console.log('blue is '+blue)
+		connection.sendUTF('gameboardsize'+boardsize)
 		updateClientBoard();
 	      }
 	      else if(red==null && message.utf8Data=='red'){
 		red=connection.remoteAddress;
 		connection.sendUTF('red');
 		console.log('red is '+red)
+		connection.sendUTF('gameboardsize'+boardsize)
 		updateClientBoard();
 	      }
 	      else if(blue!=null && red!=null){
@@ -115,10 +116,11 @@ wsServer.on('request', function(request) {
 	      }    
 	    function updateClientBoard(){
 	      var sendingData=''
-	      for(var x=0;x<5;x++){for(var y=0;y<5;y++){for(var z=0;z<4;z++){
-		if(String(gameBoard[x][y][z]).length==2){sendingData+='0'+String(gameBoard[x][y][z])}
-		else if(String(gameBoard[x][y][z]).length==1){sendingData+='00'+String(gameBoard[x][y][z])}
-		else{sendingData+=String(gameBoard[x][y][z])}
+	      for(var x=0;x<boardsizeArray[0];x++){for(var y=0;y<boardsizeArray[1];y++){for(var z=0;z<boardsizeArray[2];z++){
+		if     (String(gameBoard[x][y][z]).length==4){sendingData+=''+String(gameBoard[x][y][z])}
+		else if(String(gameBoard[x][y][z]).length==3){sendingData+='0'+String(gameBoard[x][y][z])}
+		else if(String(gameBoard[x][y][z]).length==2){sendingData+='00'+String(gameBoard[x][y][z])}
+		else{sendingData+='000'+String(gameBoard[x][y][z])}
 	      }}}
 	      connection.sendUTF(sendingData)
 	      
@@ -150,40 +152,9 @@ wsServer.on('request', function(request) {
 });
 
 
+//start mods here
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//end mods here
 
 function checkLose(side){
 var loser=1;
@@ -248,34 +219,29 @@ return Boolean(result)
 }
 
 function EYT(){
-/*
-var bluePro;
-var redPro;
-for(var x=0;x<5;x++){
-for(var y=0;y<5;y++){
-if(gameBoard[x][y][0]==1){
-bluePro+=gameBoard[x][y][2]
-}
-if(gameBoard[x][y][0]==2){
-redPro+=gameBoard[x][y][2]
-}
-}}
-*/
 if(turnmarker[0]&&turnmarker[1]){
 for(var x=0;x<5;x++){
 for(var y=0;y<5;y++){
+
+//if out of soldiers remove ownership
 if(gameBoard[x][y][1]==0){
 gameBoard[x][y][0]=0
 }
-if(gameBoard[x][y][0]!=0 && gameBoard[x][y][1]<gameBoard[x][y][2]){
+
+//if owned, produce
+if(gameBoard[x][y][0]!=0){
+gameBoard[x][y][3]+=gameBoard[x][y][2]
+}
+
+//if at least one ready, deploy one
+if(gameBoard[x][y][0]!=0 && gameBoard[x][y][3]>=1){
+gameBoard[x][y][3]--
 gameBoard[x][y][1]++
 }
-if(gameBoard[x][y][0]!=0 && gameBoard[x][y][3]>0){
-gameBoard[x][y][3]--
-}
-else if(gameBoard[x][y][0]!=0 && gameBoard[x][y][3]==0){
-gameBoard[x][y][2]++
-gameBoard[x][y][3]=5
+
+//if terrain modifier, apply
+else if(gameBoard[x][y][4]!= function(){return;}){
+gameBoard[x][y][4]();
 }
 
 }}
@@ -283,7 +249,7 @@ gameBoard[x][y][3]=5
 }
 
 function interpretClick(clix,cliy,armySize){
-
+armySize=Math.floor(armySize)
 clix-=9
 cliy-=9
 var clixyarr=getArrayCoords(clix,cliy);
