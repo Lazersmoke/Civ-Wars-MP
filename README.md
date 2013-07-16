@@ -1,8 +1,8 @@
 Civ-Wars-MP Dev!
 ================
 Current Stable Version: Out of sync  
-Current Beta Version:   Out of sync  
-Current Dev Version:    v2.0.1-dev  
+Current Beta Version:   v4.0.2-beta  
+Current Dev Version:    v4.0.2-dev  
 
 This is the development branch! Here you can find the hottest new working things that don't work, work only slightly better, or (rarley) have been merged to beta (garunteed)! This will be merged onto the beta branch whenever it works! Each push on this branch will add to the z in x.y.z
 
