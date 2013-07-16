@@ -1,9 +1,9 @@
 Civ-Wars-MP Beta!
 =================
 
-Current Stable Version: v2.0.0  
-Current Beta Version:   v2.0.0-beta  
-Current Dev Version:    Out of sync  
+Current Stable Version: Out of sync  
+Current Beta Version:   v4.0.2-beta  
+Current Dev Version:    v4.0.2-dev  
 
 This is the beta branch! Here you can find the hottest new working things! This will be merged onto the master branch for each named release. In the same light, the dev branch will be merged onto here whenever it works. 
 
