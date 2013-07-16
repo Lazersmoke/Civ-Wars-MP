@@ -1,0 +1,199 @@
+<html>
+<head>
+<link rel="stylesheet" href="mainstyle.css">
+<script>
+var selected=[0,0]
+var gameBoard=[
+[
+[1,5,1.0,0.0,function(){return;}],[0,0,0.8,0.1,function(){return;}],[0,0,0.4,0.2,function(){return;}],[0,0,0.2,0.2,function(){return;}],[0,0,0.1,2.0,function(){return;}]
+]
+,
+[
+[0,0,0.8,0.1,function(){return;}],[0,0,0.4,0.2,function(){return;}],[0,0,0.2,0.2,function(){return;}],[0,0,0.1,2.0,function(){return;}],[0,0,0.2,0.2,function(){return;}]
+]
+,
+[
+[0,0,0.4,0.2,function(){return;}],[0,0,0.2,0.2,function(){return;}],[0,0,1.0,2.0,function(){return;}],[0,0,0.2,0.2,function(){return;}],[0,0,0.4,0.2,function(){return;}]
+]
+,
+[
+[0,0,0.2,0.2,function(){return;}],[0,0,0.1,2.0,function(){return;}],[0,0,0.2,0.2,function(){return;}],[0,0,0.4,0.2,function(){return;}],[0,0,0.8,0.1,function(){return;}]
+]
+,
+[
+[0,0,0.1,2.0,function(){return;}],[0,0,0.2,0.2,function(){return;}],[0,0,0.4,0.2,function(){return;}],[0,0,0.8,0.1,function(){return;}],[2,5,1.0,0.0,function(){return;}]
+]
+]
+function changeWidth(amount){
+amount=Math.floor(amount)
+for(var x=0;x<amount;x++){
+for(var y=0;y<gameBoard.length;y++){
+gameBoard[y].push([0,0,0.0,0.0,function(){return;}])
+}
+}
+workspace.width+=amount*100
+Draw();
+}
+function changeHeight(amount){
+amount=Math.floor(amount)
+var addition=[]
+for(var x=0;x<gameBoard[0].length;x++){
+addition.push([0,0,0.0,0.0,function(){return;}])
+}
+for(var x=0;x<amount;x++){
+gameBoard.push(addition)
+}
+workspace.height+=amount*100
+Draw();
+}
+function Clicky(e){
+var clix=e.clientX-9
+var cliy=e.clientY-9
+selected[0]=Math.floor(clix/100)
+selected[1]=Math.floor(cliy/100)
+document.getElementById('selectedOwner').value=gameBoard[selected[1]][selected[0]][0]
+document.getElementById('selectedStrength').value=gameBoard[selected[1]][selected[0]][1]
+document.getElementById('selectedInfrastructure').value=gameBoard[selected[1]][selected[0]][2]
+document.getElementById('selectedBuildProgress').value=gameBoard[selected[1]][selected[0]][3]
+Draw();
+}
+function Draw(){
+workspace.width=workspace.width
+for(var x=0;x<workspace.width/100;x++){
+for(var y=0;y<workspace.height/100;y++){
+
+var coord=[(x*100),(y*100),((x+1)*100),((y+1)*100)]
+
+//if its blue
+if(gameBoard[y][x][0]==1){
+
+//make space blue
+ctx.fillStyle="#00007F"
+ctx.fillRect(coord[0],coord[1],coord[2],coord[3])
+
+//and put a blue number
+ctx.font="30px Georgia"
+ctx.fillStyle="#0000FF"
+ctx.fillText(String(gameBoard[y][x][1]),coord[0],coord[1]+20)
+
+}
+//if its red
+else if(gameBoard[y][x][0]==2){
+
+//make space red
+ctx.fillStyle="#7F0000"
+ctx.fillRect(coord[0],coord[1],coord[2],coord[3])
+
+//and put a red number
+ctx.font="30px Georgia"
+ctx.fillStyle="#FF0000"
+ctx.fillText(String(gameBoard[y][x][1]),coord[0],coord[1]+20)
+}
+
+//if its unowned
+else if(gameBoard[y][x][0]==0){
+
+//make space gray
+ctx.fillStyle="#3F3F3F"
+ctx.fillRect(coord[0],coord[1],coord[2],coord[3])
+}
+
+//infrastructer/reserve
+ctx.font="30px Georgia"
+ctx.fillStyle="#007F00"
+ctx.fillText(String(gameBoard[y][x][2]),coord[0]+2,coord[1]+90)
+ctx.beginPath();
+ctx.arc(coord[0]+80,coord[1]+20,20,0,2*(gameBoard[y][x][3])*Math.PI,false)
+ctx.lineTo(coord[0]+80,coord[1]+20)
+ctx.lineTo(coord[0]+100,coord[1]+20)
+ctx.fill();
+ctx.strokeStyle="#000000"
+ctx.strokeRect(coord[0],coord[1],coord[2],coord[3])
+
+if(selected[0]==x && selected[1]==y){
+var grd=ctx.createRadialGradient(50+coord[0],50+coord[1],10,50+coord[0],50+coord[1],50);
+grd.addColorStop(0,"yellow");
+grd.addColorStop(1,"rgba(0,0,0,0)");
+ctx.fillStyle=grd
+
+ctx.fillRect(coord[0],coord[1],coord[2],coord[3])
+delete grd
+}
+//setTimeout(Draw(),50)
+}
+}
+}
+</script>
+</head>
+<body>
+<canvas width="500px" height="500px" id="workspace" onclick="Clicky(event)">You should get Nightly!</canvas>
+<br>
+<button onclick="changeWidth(Number(document.getElementById('widthAmount').value))">Change Width</button><input type="text" id="widthAmount">Number of squares</input>
+<br>
+<button onclick="changeHeight(Number(document.getElementById('heightAmount').value))">Change Height</button><input type="text" id="heightAmount">Number of squares</input>
+<br>
+<table>
+<tr>
+<th>
+Controller
+</th>
+<th>
+Strength
+</th>
+<th>
+Infrastructure
+</th>
+<th>
+Build Progress
+</th>
+</tr>
+<tr>
+<td>
+<select id="selectedOwner" onclick="gameBoard[selected[1]][selected[0]][0]=document.getElementById('selectedOwner').value;Draw();">
+  <option value=0>Unowned</option>
+  <option value=1>Blue</option>
+  <option value=2>Red</option>
+</select>
+</td>
+<td>
+<input type="text" id="selectedStrength"></input><button onclick="gameBoard[selected[1]][selected[0]][1]=Number(document.getElementById('selectedStrength').value);Draw();">Set</button>
+</td>
+<td>
+<input type="text" id="selectedInfrastructure"></input><button onclick="gameBoard[selected[1]][selected[0]][2]=Number(document.getElementById('selectedInfrastructure').value);Draw();">Set</button>
+</td>
+<td>
+<input type="text" id="selectedBuildProgress"></input><button onclick="gameBoard[selected[1]][selected[0]][3]=Number(document.getElementById('selectedBuildProgress').value);Draw();">Set</button>
+</td>
+</tr>
+</table>
+<input type="text" id="output"></input>
+<button onclick="
+  var sendingData=''
+	var boardsize=''
+	
+	if(String(workspace.width/100).length==3){boardsize+=String(workspace.width/100)}
+	else if(String(workspace.width/100).length==2){boardsize+='0'+String(workspace.width/100)}
+	else if(String(workspace.width/100).length==1){boardsize+='00'+String(workspace.width/100)}
+	
+	if(String(workspace.height/100).length==3){boardsize+=String(workspace.height/100)}
+	else if(String(workspace.height/100).length==2){boardsize+='0'+String(workspace.height/100)}
+	else if(String(workspace.height/100).length==1){boardsize+='00'+String(workspace.height/100)}
+	
+	boardsize+='004'
+	
+	var boardsizeArray=[Number(boardsize.slice(0,3)),Number(boardsize.slice(3,6)),Number(boardsize.slice(6,9))]
+	
+	for(var x=0;x<boardsizeArray[0];x++){for(var y=0;y<boardsizeArray[1];y++){for(var z=0;z<boardsizeArray[2];z++){
+		if          (String(gameBoard[x][y][z]).length==4){sendingData+=''+String(gameBoard[x][y][z])}
+		else if(String(gameBoard[x][y][z]).length==3){sendingData+='0'+String(gameBoard[x][y][z])}
+		else if(String(gameBoard[x][y][z]).length==2){sendingData+='00'+String(gameBoard[x][y][z])}
+		else{sendingData+='000'+String(gameBoard[x][y][z])}
+	}}}
+	document.getElementById('output').value=boardsize+sendingData;"
+>Generate</button>
+<script>
+var workspace=document.getElementById('workspace')
+var ctx=workspace.getContext('2d')
+Draw();
+</script>
+</body>
