@@ -168,26 +168,26 @@ Build Progress
 </table>
 <input type="text" id="output"></input>
 <button onclick="
-  var sendingData=''
+	var sendingData=''
 	var boardsize=''
-	
-	if(String(workspace.width/100).length==3){boardsize+=String(workspace.width/100)}
-	else if(String(workspace.width/100).length==2){boardsize+='0'+String(workspace.width/100)}
-	else if(String(workspace.width/100).length==1){boardsize+='00'+String(workspace.width/100)}
 	
 	if(String(workspace.height/100).length==3){boardsize+=String(workspace.height/100)}
 	else if(String(workspace.height/100).length==2){boardsize+='0'+String(workspace.height/100)}
 	else if(String(workspace.height/100).length==1){boardsize+='00'+String(workspace.height/100)}
+	
+	if(String(workspace.width/100).length==3){boardsize+=String(workspace.width/100)}
+	else if(String(workspace.width/100).length==2){boardsize+='0'+String(workspace.width/100)}
+	else if(String(workspace.width/100).length==1){boardsize+='00'+String(workspace.width/100)}
 	
 	boardsize+='004'
 	
 	var boardsizeArray=[Number(boardsize.slice(0,3)),Number(boardsize.slice(3,6)),Number(boardsize.slice(6,9))]
 	
 	for(var x=0;x<boardsizeArray[0];x++){for(var y=0;y<boardsizeArray[1];y++){for(var z=0;z<boardsizeArray[2];z++){
-		if          (String(gameBoard[x][y][z]).length==4){sendingData+=''+String(gameBoard[x][y][z])}
-		else if(String(gameBoard[x][y][z]).length==3){sendingData+='0'+String(gameBoard[x][y][z])}
-		else if(String(gameBoard[x][y][z]).length==2){sendingData+='00'+String(gameBoard[x][y][z])}
-		else{sendingData+='000'+String(gameBoard[x][y][z])}
+		if          (String(gameBoard[y][x][z]).length==4){sendingData+=''+String(gameBoard[y][x][z])}
+		else if(String(gameBoard[y][x][z]).length==3){sendingData+='0'+String(gameBoard[y][x][z])}
+		else if(String(gameBoard[y][x][z]).length==2){sendingData+='00'+String(gameBoard[y][x][z])}
+		else{sendingData+='000'+String(gameBoard[y][x][z])}
 	}}}
 	document.getElementById('output').value=boardsize+sendingData;"
 >Generate</button>
