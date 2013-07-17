@@ -1,7 +1,7 @@
 Civ-Wars-MP
 ===========
 
-Current Stable Version: v2.0.0
+Current Stable Version: v4.0.4-stable
 
 How to play:
 
