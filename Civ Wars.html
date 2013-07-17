@@ -31,8 +31,8 @@ boardsize=[Number(e.data.slice(13,16)),Number(e.data.slice(16,19)),Number(e.data
 }
 if(String(e.data).length==boardsize[0]*boardsize[1]*boardsize[2]*4){
 var iteratorCat=0
-for(var x=0;x<boardsize[0];x++){for(var y=0;y<boardsize[1];y++){for(var z=0;z<boardsize[2];z++){
-gameBoard[x][y][z]=Number(String(e.data).slice(iteratorCat,iteratorCat+4))
+for(var x=0;x<boardsize[1];x++){for(var y=0;y<boardsize[0];y++){for(var z=0;z<boardsize[2];z++){
+gameBoard[y][x][z]=Number(String(e.data).slice(iteratorCat,iteratorCat+4))
 iteratorCat+=4
 }}}
 
@@ -119,20 +119,20 @@ drawBoard()
 
 function checkLose(side){
 var loser=1;
-for(var xx=0;xx<5;xx++){
-for(var yy=0;yy<5;yy++){
-if(gameBoard[xx][yy][0]==side){
+for(var x=0;x<boardsize[1];x++){
+for(var y=0;y<boardsize[0];y++){
+if(gameBoard[y][x][0]==side){
 loser=0;
 }}}
 return Boolean(loser)
 }
 
-function getCanvasCoords(x,y){
-return [x*100,y*100,(x+1)*100,(y+1)*100]
+function getCanvasCoords(y,x){
+return [y*100,x*100,(y+1)*100,(x+1)*100]
 }
 
-function getArrayCoords(x,y){
-return [Math.floor(x/100),Math.floor(y/100)]
+function getArrayCoords(y,x){
+return [Math.floor(y/100),Math.floor(x/100)]
 }
 
 function drawBoard(){
@@ -140,12 +140,12 @@ function drawBoard(){
 theCanvas.width=theCanvas.width
 var coords;
 //loop through all sqaures
-for(var x=0;x<5;x++){
-for(var y=0;y<5;y++){
+for(var x=0;x<boardsize[1];x++){
+for(var y=0;y<boardsize[0];y++){
 
 //if its blue
-if(gameBoard[x][y][0]==1 && checkContingent(x,y,player,1)){
-coords=getCanvasCoords(x,y)
+if(gameBoard[y][x][0]==1 && checkContingent(y,x,player,1)){
+coords=getCanvasCoords(y,x)
 
 //make space blue
 ctx.fillStyle="#00007F"
@@ -154,12 +154,12 @@ ctx.fillRect(coords[0],coords[1],coords[2],coords[3])
 //and put a blue number
 ctx.font="30px Georgia"
 ctx.fillStyle="#0000FF"
-ctx.fillText(String(gameBoard[x][y][1]),coords[0],coords[1]+20)
+ctx.fillText(String(gameBoard[y][x][1]),coords[0],coords[1]+20)
 
 }
 //if its red
-else if(gameBoard[x][y][0]==2 && checkContingent(x,y,player,1)){
-coords=getCanvasCoords(x,y)
+else if(gameBoard[y][x][0]==2 && checkContingent(y,x,player,1)){
+coords=getCanvasCoords(y,x)
 
 //make space red
 ctx.fillStyle="#7F0000"
@@ -168,12 +168,12 @@ ctx.fillRect(coords[0],coords[1],coords[2],coords[3])
 //and put a red number
 ctx.font="30px Georgia"
 ctx.fillStyle="#FF0000"
-ctx.fillText(String(gameBoard[x][y][1]),coords[0],coords[1]+20)
+ctx.fillText(String(gameBoard[y][x][1]),coords[0],coords[1]+20)
 }
 
 //if its unowned
-else if(gameBoard[x][y][0]==0 && checkContingent(x,y,player,1)){
-coords=getCanvasCoords(x,y)
+else if(gameBoard[y][x][0]==0 && checkContingent(y,x,player,1)){
+coords=getCanvasCoords(y,x)
 
 //make space gray
 ctx.fillStyle="#3F3F3F"
@@ -181,7 +181,7 @@ ctx.fillRect(coords[0],coords[1],coords[2],coords[3])
 }
 
 else{
-coords=getCanvasCoords(x,y)
+coords=getCanvasCoords(y,x)
 
 //make space black
 ctx.fillStyle="#000000"
@@ -189,13 +189,13 @@ ctx.fillRect(coords[0],coords[1],coords[2],coords[3])
 }
 
 //and show infrastructure and reserve
-if(checkContingent(x,y,player,1)){
-coords=getCanvasCoords(x,y)
+if(checkContingent(y,x,player,1)){
+coords=getCanvasCoords(y,x)
 ctx.font="30px Georgia"
 ctx.fillStyle="#007F00"
-ctx.fillText(String(gameBoard[x][y][2]),coords[0]+2,coords[1]+90)
+ctx.fillText(String(gameBoard[y][x][2]),coords[0]+2,coords[1]+90)
 ctx.beginPath();
-ctx.arc(coords[0]+80,coords[1]+20,20,0,2*(gameBoard[x][y][3])*Math.PI,false)
+ctx.arc(coords[0]+80,coords[1]+20,20,0,2*(gameBoard[y][x][3])*Math.PI,false)
 ctx.lineTo(coords[0]+80,coords[1]+20)
 ctx.lineTo(coords[0]+100,coords[1]+20)
 ctx.fill();
@@ -204,7 +204,7 @@ ctx.strokeRect(coords[0],coords[1],coords[2],coords[3])
 }
 
 if(selected[0]==x && selected[1]==y && selected[2]==1){
-coords=getCanvasCoords(x,y)
+coords=getCanvasCoords(y,x)
 var grd=ctx.createRadialGradient(50+coords[0],50+coords[1],10,50+coords[0],50+coords[1],50);
 grd.addColorStop(0,"yellow");
 grd.addColorStop(1,"rgba(0,0,0,0)");
@@ -214,43 +214,43 @@ ctx.fillRect(coords[0],coords[1],coords[2],coords[3])
 delete grd
 }}}}
 
-function checkContingent(x,y,reqOwner,useCorner){
+function checkContingent(y,x,reqOwner,useCorner){
 if(useCorner==null){useCorner=0;}
 var doup=1
 var dodown=1
 var doleft=1
 var doright=1
 if(x==0){doleft=0;}
-if(x==4){doright=0;}
+if(x==boardsize[1]-1){doright=0;}
 if(y==0){doup=0;}
-if(y==4){dodown=0;}
+if(y==boardsize[0]-1){dodown=0;}
 
 var result=0
 
 if(doup){
-result=(result || gameBoard[x][y-1][0]==reqOwner)
+result=(result || gameBoard[y-1][x][0]==reqOwner)
 }
 if(dodown){
-result=(result || gameBoard[x][y+1][0]==reqOwner)
+result=(result || gameBoard[y+1][x][0]==reqOwner)
 }
 if(doleft){
-result=(result || gameBoard[x-1][y][0]==reqOwner)
+result=(result || gameBoard[y][x-1][0]==reqOwner)
 }
 if(doright){
-result=(result || gameBoard[x+1][y][0]==reqOwner)
+result=(result || gameBoard[y][x+1][0]==reqOwner)
 }
-result=(result || gameBoard[x][y][0]==reqOwner)
+result=(result || gameBoard[y][x][0]==reqOwner)
 if(doup && doleft && useCorner){
-result=(result || gameBoard[x-1][y-1][0]==reqOwner)
+result=(result || gameBoard[y-1][x-1][0]==reqOwner)
 }
 if(doup && doright && useCorner){
-result=(result || gameBoard[x+1][y-1][0]==reqOwner)
+result=(result || gameBoard[y-1][x+1][0]==reqOwner)
 }
 if(dodown && doleft && useCorner){
-result=(result || gameBoard[x-1][y+1][0]==reqOwner)
+result=(result || gameBoard[y+1][x-1][0]==reqOwner)
 }
 if(dodown && doright && useCorner){
-result=(result || gameBoard[x+1][y+1][0]==reqOwner)
+result=(result || gameBoard[y+1][x+1][0]==reqOwner)
 }
 
 
