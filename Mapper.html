@@ -2,7 +2,7 @@
 <head>
 <link rel="stylesheet" href="mainstyle.css">
 <script>
-var selected=[0,0]
+var selected=[17,17]
 var gameBoard=[
 [
 [1,5,1.0,0.0,function(){return;}],[0,0,0.8,0.1,function(){return;}],[0,0,0.4,0.2,function(){return;}],[0,0,0.2,0.2,function(){return;}],[0,0,0.1,2.0,function(){return;}]
@@ -26,9 +26,18 @@ var gameBoard=[
 ]
 function changeWidth(amount){
 amount=Math.floor(amount)
+if(amount<0){
+for(var x=0;x<Math.abs(amount);x++){
+for(var y=0;y<gameBoard.length;y++){
+gameBoard[y].pop()
+}
+}
+}
+else{
 for(var x=0;x<amount;x++){
 for(var y=0;y<gameBoard.length;y++){
 gameBoard[y].push([0,0,0.0,0.0,function(){return;}])
+}
 }
 }
 workspace.width+=amount*100
@@ -36,12 +45,19 @@ Draw();
 }
 function changeHeight(amount){
 amount=Math.floor(amount)
+if(amount<0){
+for(var x=0;x<Math.abs(amount);x++){
+gameBoard.pop()
+}
+}
+else{
 var addition=[]
 for(var x=0;x<gameBoard[0].length;x++){
 addition.push([0,0,0.0,0.0,function(){return;}])
 }
 for(var x=0;x<amount;x++){
 gameBoard.push(addition)
+}
 }
 workspace.height+=amount*100
 Draw();
