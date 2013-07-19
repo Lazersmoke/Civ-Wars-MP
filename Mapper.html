@@ -27,7 +27,7 @@ var gameBoard=[
 function changeWidth(amount){
 amount=Math.floor(amount)
 if(amount<0){
-for(var x=0;x<amount;x++){
+for(var x=0;x<Math.abs(amount);x++){
 for(var y=0;y<gameBoard.length;y++){
 gameBoard[y].pop()
 }
@@ -46,7 +46,7 @@ Draw();
 function changeHeight(amount){
 amount=Math.floor(amount)
 if(amount<0){
-for(var x=0;x<amount;x++){
+for(var x=0;x<Math.abs(amount);x++){
 gameBoard.pop()
 }
 }
