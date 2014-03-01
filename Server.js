@@ -162,137 +162,125 @@ wsServer.on('request', function(request) {
 //end mods here
 
 function checkLose(side){
-var loser=1;
-for(var xx=0;xx<5;xx++){
-for(var yy=0;yy<5;yy++){
-if(gameBoard[xx][yy][0]==side){
-loser=0;
-}}}
-return Boolean(loser);
+	var loser=1;
+	for(var xx=0;xx<5;xx++){
+		for(var yy=0;yy<5;yy++){
+			if(gameBoard[xx][yy][0]==side){
+				loser=0;
+			}
+		}
+	}
+	return Boolean(loser);
 }
 
 function getCanvasCoords(x,y){
-return [x*100,y*100,(x+1)*100,(y+1)*100]
+	return [x*100,y*100,(x+1)*100,(y+1)*100]
 }
 
 function getArrayCoords(x,y){
-return [Math.floor(x/100),Math.floor(y/100)]
+	return [Math.floor(x/100),Math.floor(y/100)]
 }
 
 function checkContingent(x,y,reqOwner,useCorner){
-if(useCorner==null){useCorner=0;}
-var doup=1
-var dodown=1
-var doleft=1
-var doright=1
-if(x==0){doleft=0;}
-if(x==4){doright=0;}
-if(y==0){doup=0;}
-if(y==4){dodown=0;}
-
-var result=0
-
-if(doup){
-result=(result || gameBoard[x][y-1][0]==reqOwner)
-}
-if(dodown){
-result=(result || gameBoard[x][y+1][0]==reqOwner)
-}
-if(doleft){
-result=(result || gameBoard[x-1][y][0]==reqOwner)
-}
-if(doright){
-result=(result || gameBoard[x+1][y][0]==reqOwner)
-}
-result=(result || gameBoard[x][y][0]==reqOwner)
-if(doup && doleft && useCorner){
-result=(result || gameBoard[x-1][y-1][0]==reqOwner)
-}
-if(doup && doright && useCorner){
-result=(result || gameBoard[x+1][y-1][0]==reqOwner)
-}
-if(dodown && doleft && useCorner){
-result=(result || gameBoard[x-1][y+1][0]==reqOwner)
-}
-if(dodown && doright && useCorner){
-result=(result || gameBoard[x+1][y+1][0]==reqOwner)
-}
-
-
-
-return Boolean(result)
+	if(useCorner==null){useCorner=0;}
+	var doup=1
+	var dodown=1
+	var doleft=1
+	var doright=1
+	if(x==0){doleft=0;}
+	if(x==4){doright=0;}
+	if(y==0){doup=0;}
+	if(y==4){dodown=0;}
+	var result=0
+	if(doup){
+		result=(result || gameBoard[x][y-1][0]==reqOwner)
+	}
+	if(dodown){
+		result=(result || gameBoard[x][y+1][0]==reqOwner)
+	}
+	if(doleft){
+		result=(result || gameBoard[x-1][y][0]==reqOwner)
+	}
+	if(doright){
+		result=(result || gameBoard[x+1][y][0]==reqOwner)
+	}
+		result=(result || gameBoard[x][y][0]==reqOwner)
+	if(doup && doleft && useCorner){
+		result=(result || gameBoard[x-1][y-1][0]==reqOwner)
+	}
+	if(doup && doright && useCorner){
+		result=(result || gameBoard[x+1][y-1][0]==reqOwner)
+	}
+	if(dodown && doleft && useCorner){
+		result=(result || gameBoard[x-1][y+1][0]==reqOwner)
+	}
+	if(dodown && doright && useCorner){
+		result=(result || gameBoard[x+1][y+1][0]==reqOwner)
+	}
+	return Boolean(result)
 }
 
 function EYT(){
-if(turnmarker[0]&&turnmarker[1]){
-for(var x=0;x<5;x++){
-for(var y=0;y<5;y++){
-
-//if out of soldiers remove ownership
-if(gameBoard[x][y][1]==0){
-gameBoard[x][y][0]=0
-}
-
-//if owned, produce
-if(gameBoard[x][y][0]!=0){
-gameBoard[x][y][3]+=gameBoard[x][y][2]
-}
-
-//if at least one ready, deploy one
-if(gameBoard[x][y][0]!=0 && gameBoard[x][y][3]>=1){
-gameBoard[x][y][3]--
-gameBoard[x][y][1]++
-}
-
-//if terrain modifier, apply
-else if(gameBoard[x][y][4]!= function(){return;}){
-gameBoard[x][y][4]();
-}
-
-}}
-}
+	if(turnmarker[0]&&turnmarker[1]){
+		for(var x=0;x<5;x++){
+			for(var y=0;y<5;y++){
+				//if out of soldiers remove ownership
+				if(gameBoard[x][y][1]==0){
+					gameBoard[x][y][0]=0
+				}
+				
+				//if owned, produce
+				if(gameBoard[x][y][0]!=0){
+					gameBoard[x][y][3]+=gameBoard[x][y][2]
+				}
+				
+				//if at least one ready, deploy one
+				if(gameBoard[x][y][0]!=0 && gameBoard[x][y][3]>=1){
+					gameBoard[x][y][3]--
+					gameBoard[x][y][1]++
+				}
+				
+				//if terrain modifier, apply
+				else if(gameBoard[x][y][4]!= function(){return;}){
+					gameBoard[x][y][4]();
+				}
+			
+			}
+		
+		}
+	}
 }
 
 function interpretClick(clix,cliy,armySize){
-armySize=Math.floor(armySize)
-clix-=9
-cliy-=9
-var clixyarr=getArrayCoords(clix,cliy);
-if(selected[2]==0){
-selected=[clixyarr[0],clixyarr[1],1]
-}
-else{
-
-//_*_*_*_*_*_*_*_*_*_*_*_*_*ATTACK*_*_*_*_*_*_*_*_*_*_*_*_*_
-
-	//target is gameBoard[clixyarr[0]][clixyarr[1]][1]
-	//attacker is gameBoard[selected[0]][selected[1]][1]
-
-//var armySize=Number(document.getElementById('armysize').value)
-//var armySize=Number(prompt('How many soldiers?',String(Math.floor(gameBoard[selected[0]][selected[1]][1]/2))))
-
-//if were not bluffing, having a civil war, moving the other player's troops, or missing the ground
-if(armySize<gameBoard[selected[0]][selected[1]][1] && gameBoard[selected[0]][selected[1]][0]!=gameBoard[clixyarr[0]][clixyarr[1]][0] && checkContingent(clixyarr[0],clixyarr[1],gameBoard[selected[0]][selected[1]][0]) ){
-	
-	//if our army is smaller or equal than theirs, compute; target-=armySize;attacker-=Armysize
-	if(armySize<=gameBoard[clixyarr[0]][clixyarr[1]][1]){gameBoard[clixyarr[0]][clixyarr[1]][1]-=armySize;gameBoard[selected[0]][selected[1]][1]-=armySize}
-	
-	else{
-	//if our army is bigger than theirs, compute and take over; attacker-=armySize; target=remainingArmy; capture
-	if(armySize>gameBoard[clixyarr[0]][clixyarr[1]][1]){gameBoard[selected[0]][selected[1]][1]-=armySize;gameBoard[clixyarr[0]][clixyarr[1]][1]=armySize-gameBoard[clixyarr[0]][clixyarr[1]][1];gameBoard[clixyarr[0]][clixyarr[1]][0]=gameBoard[selected[0]][selected[1]][0];}
+	armySize=Math.floor(armySize)
+	clix-=9
+	cliy-=9
+	var clixyarr=getArrayCoords(clix,cliy);
+	if(selected[2]==0){
+		selected=[clixyarr[0],clixyarr[1],1]
 	}
-}
-//_*_*_*_*_*_*_*_*_*_*_*_*_*ATTACK*_*_*_*_*_*_*_*_*_*_*_*_*_
-
-//if we are moving troops, but not the other player's, and we're not bluffing
-else if(gameBoard[selected[0]][selected[1]][0]!=gameBoard[clixyarr[0]][clixyarr[1]][0] && armySize<=gameBoard[selected[0]][selected[1]][1]){
-if(armySize<gameBoard[selected[0]][selected[1]][1] && gameBoard[selected[0]][selected[1]][0]==gameBoard[clixyarr[0]][clixyarr[1]][0]){
-gameBoard[clixyarr[0]][clixyarr[1]][1]+=armySize
-gameBoard[selected[0]][selected[1]][1]-=armySize
-}
-}
-selected=[selected[0],selected[1],0]
-}
-/*drawBoard()*/;
+	else{
+		//if were not bluffing, having a civil war, moving the other player's troops, or missing the ground
+		if(armySize<gameBoard[selected[0]][selected[1]][1] && 
+		gameBoard[selected[0]][selected[1]][0]!=gameBoard[clixyarr[0]][clixyarr[1]][0] && 
+		checkContingent(clixyarr[0],clixyarr[1],gameBoard[selected[0]][selected[1]][0]) ){
+			//if our army is smaller or equal than theirs, compute; target-=armySize;attacker-=Armysize
+			if(armySize<=gameBoard[clixyarr[0]][clixyarr[1]][1]){gameBoard[clixyarr[0]][clixyarr[1]][1]-=armySize;gameBoard[selected[0]][selected[1]][1]-=armySize}
+			
+			else{
+			//if our army is bigger than theirs, compute and take over; attacker-=armySize; target=remainingArmy; capture
+			if(armySize>gameBoard[clixyarr[0]][clixyarr[1]][1]){gameBoard[selected[0]][selected[1]][1]-=armySize;gameBoard[clixyarr[0]][clixyarr[1]][1]=armySize-gameBoard[clixyarr[0]][clixyarr[1]][1];gameBoard[clixyarr[0]][clixyarr[1]][0]=gameBoard[selected[0]][selected[1]][0];}
+			}
+		}
+		//if we are moving troops, but not the other player's, and we're not bluffing
+		else if(gameBoard[selected[0]][selected[1]][0]!=gameBoard[clixyarr[0]][clixyarr[1]][0] && armySize<=gameBoard[selected[0]][selected[1]][1]){
+		if(armySize<gameBoard[selected[0]][selected[1]][1] && gameBoard[selected[0]][selected[1]][0]==gameBoard[clixyarr[0]][clixyarr[1]][0]){
+		gameBoard[clixyarr[0]][clixyarr[1]][1]+=armySize
+		gameBoard[selected[0]][selected[1]][1]-=armySize
+		}
+		}
+		selected=[selected[0],selected[1],0]
+	}
+	/*drawBoard()*/;
 }
  
