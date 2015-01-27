@@ -129,13 +129,7 @@ wsServer.on('request', function(request) {
 	      }    
 	    function updateClientBoard(){
 	      var sendingData=''
-	      for(var x=0;x<boardsizeArray[0];x++){for(var y=0;y<boardsizeArray[1];y++){for(var z=0;z<boardsizeArray[2];z++){
-		if          (String(gameBoard[x][y][z]).length==4){sendingData+=''+String(gameBoard[x][y][z])}
-		else if(String(gameBoard[x][y][z]).length==3){sendingData+='0'+String(gameBoard[x][y][z])}
-		else if(String(gameBoard[x][y][z]).length==2){sendingData+='00'+String(gameBoard[x][y][z])}
-		else if(String(gameBoard[x][y][z]).length==1){sendingData+='000'+String(gameBoard[x][y][z])}
-		else{console.log("ERROR WRONG SIZE: '"+String(gameBoard[x][y][z])+"' ")}
-	      }}}
+	      sendingData+=JSON.stringify(gameBoard)
 	      connection.sendUTF(sendingData)
 	      
 	      var colors=['0','0']
