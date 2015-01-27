@@ -1,12 +1,7 @@
-var PORT, MAPCODE, blue, red, turnmarker, selected, selectedB, selectedR, gameBoard, boardsize, iteratorCat, boardsizeArray;
+reset();
 function reset(){
 var PORT=8090
 var MAPCODE='00500500400010005000100000000000000.800.10000000000.400.20000000000.200.20000000000.100020000000000.800.10000000000.400.20000000000.200.20000000000.100020000000000.200.20000000000.400.20000000000.200.200000000000100020000000000.200.20000000000.400.20000000000.200.20000000000.100020000000000.200.20000000000.400.20000000000.800.10000000000.100020000000000.200.20000000000.400.20000000000.800.10002000500010000'
-
-
-
-
-
 //[owner,strenghth,infrastructure,build progress]
 var blue=null;
 var red=null;
@@ -47,7 +42,6 @@ iteratorCat+=4
 var boardsizeArray=[Number(boardsize.slice(0,3)),Number(boardsize.slice(3,6)),Number(boardsize.slice(6,9))]
 
 }
-reset();
 
 var WebSocketServer = require('websocket').server;
 var http = require('http');
