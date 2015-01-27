@@ -29,12 +29,8 @@ console.log('OK, we proscessed your click\n')
 if(e.data.slice(0,13)=='gameboardsize'){
 boardsize=[Number(e.data.slice(13,16)),Number(e.data.slice(16,19)),Number(e.data.slice(19,22))]
 }
-if(String(e.data).length>=boardsize[0]*boardsize[1]*boardsize[2]*4){
-var iteratorCat=0
-for(var x=0;x<boardsize[0];x++){for(var y=0;y<boardsize[1];y++){for(var z=0;z<boardsize[2];z++){
-gameBoard[x][y][z]=Number(String(e.data).slice(iteratorCat,iteratorCat+4))
-iteratorCat+=4
-}}}
+if(e.data.slice(0,1)=='['){
+gameBoard=JSON.parse(e.data)
 
 drawBoard();
 }
