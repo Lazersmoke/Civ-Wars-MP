@@ -39,8 +39,20 @@ iteratorCat+=4
 
 var boardsizeArray=[Number(boardsize.slice(0,3)),Number(boardsize.slice(3,6)),Number(boardsize.slice(6,9))]
 
+function reset(){
+var blue=null;
+var red=null;
+var turnmarker=[0,0]
+var selected=[0,0,0]
+var selectedB=[0,0,0]
+var selectedR=[0,0,0]
+var boardsize=MAPCODE.slice(0,9)
+var iteratorCat=9
+for(var x=0;x<boardsize[0];x++){for(var y=0;y<boardsize[1];y++){for(var z=0;z<boardsize[2];z++){
+gameBoard[x][y][z]=Number(String(MAPCODE).slice(iteratorCat,iteratorCat+4))
+iteratorCat+=4
+}}}
 }
-
 var WebSocketServer = require('websocket').server;
 var http = require('http');
 
