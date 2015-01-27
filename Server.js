@@ -269,7 +269,8 @@ function interpretClick(clix,cliy,armySize,player){
 		if(armySize<gameBoard[selected[0]][selected[1]][1] && //no bluff
 		gameBoard[selected[0]][selected[1]][0]!=gameBoard[clixyarr[0]][clixyarr[1]][0] && //not civil war
 		checkContingent(clixyarr[0],clixyarr[1],player) && //not jumping
-		gameBoard[selected[0]][selected[1]][0]==player){ //self selected
+		gameBoard[selected[0]][selected[1]][0]==player //self selected
+		gameBoard[selected[0]][selected[1]][1]>0){ //can't vacate
 			//if our army is smaller or equal than theirs, compute; target-=armySize;attacker-=Armysize
 			if(armySize<=gameBoard[clixyarr[0]][clixyarr[1]][1]){
 				gameBoard[clixyarr[0]][clixyarr[1]][1]-=armySize
@@ -277,15 +278,16 @@ function interpretClick(clix,cliy,armySize,player){
 			}
 			//if our army is bigger than theirs, compute and take over; attacker-=armySize; target=remainingArmy; capture
 			else if(armySize>gameBoard[clixyarr[0]][clixyarr[1]][1]){
-        gameBoard[selected[0]][selected[1]][1]-=armySize
-        gameBoard[clixyarr[0]][clixyarr[1]][1]=armySize-gameBoard[clixyarr[0]][clixyarr[1]][1]
-        gameBoard[clixyarr[0]][clixyarr[1]][0]=gameBoard[selected[0]][selected[1]][0]
+			        gameBoard[selected[0]][selected[1]][1]-=armySize
+			        gameBoard[clixyarr[0]][clixyarr[1]][1]=armySize-gameBoard[clixyarr[0]][clixyarr[1]][1]
+			        gameBoard[clixyarr[0]][clixyarr[1]][0]=gameBoard[selected[0]][selected[1]][0]
 			}
 		}
 		//if we are moving troops, but not the other player's, and we're not bluffing
 		else if(gameBoard[selected[0]][selected[1]][0]==player && //self selected
 		armySize<=gameBoard[selected[0]][selected[1]][1] && //no bluff
-		gameBoard[selected[0]][selected[1]][0]==gameBoard[clixyarr[0]][clixyarr[1]][0]){ //internal movement
+		gameBoard[selected[0]][selected[1]][0]==gameBoard[clixyarr[0]][clixyarr[1]][0] && //internal movement
+		gameBoard[selected[0]][selected[1]][1]>0){ //can't vacate
 				gameBoard[clixyarr[0]][clixyarr[1]][1]+=armySize
 				gameBoard[selected[0]][selected[1]][1]-=armySize
 		}
