@@ -242,7 +242,7 @@ function EYT(){
 				
 				//if owned, produce
 				if(gameBoard[x][y][0]!=0){
-					gameBoard[x][y][3]+=gameBoard[x][y][2]
+					gameBoard[x][y][3]+=gameBoard[x][y][2].toFixed(1)
 				}
 				
 				//if at least one ready, deploy one
