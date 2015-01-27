@@ -106,14 +106,14 @@ wsServer.on('request', function(request) {
 	    if(message.utf8Data.slice(9,10)=='b' && message.utf8Data.length==10){
 	      var coords=[Number(String(message.utf8Data).slice(0,3)),Number(String(message.utf8Data).slice(3,6)),Number(String(message.utf8Data).slice(6,9))]
 	      selected=selectedB
-	      interpretClick(coords[0],coords[1],coords[2])
+	      interpretClick(coords[0],coords[1],coords[2],1)
 	      selectedB=selected
 	      connection.sendUTF('movealong')
 	    }
 	    else if(message.utf8Data.slice(9,10)=='r' && message.utf8Data.length==10){
 	      var coords=[Number(String(message.utf8Data).slice(0,3)),Number(String(message.utf8Data).slice(3,6)),Number(String(message.utf8Data).slice(6,9))]
 	      selected=selectedR
-	      interpretClick(coords[0],coords[1],coords[2])
+	      interpretClick(coords[0],coords[1],coords[2],2)
 	      selectedR=selected
 	      connection.sendUTF('movealong')
 	    }
@@ -256,7 +256,7 @@ function EYT(){
 	}
 }
 
-function interpretClick(clix,cliy,armySize){
+function interpretClick(clix,cliy,armySize,player){
 	armySize=Math.floor(armySize)
 	clix-=9
 	cliy-=9
@@ -266,23 +266,29 @@ function interpretClick(clix,cliy,armySize){
 	}
 	else{
 		//if were not bluffing, having a civil war, moving the other player's troops, or missing the ground
-		if(armySize<gameBoard[selected[0]][selected[1]][1] && 
-		gameBoard[selected[0]][selected[1]][0]!=gameBoard[clixyarr[0]][clixyarr[1]][0] && 
-		checkContingent(clixyarr[0],clixyarr[1],gameBoard[selected[0]][selected[1]][0]) ){
+		if(armySize<gameBoard[selected[0]][selected[1]][1] && //no bluff
+		gameBoard[selected[0]][selected[1]][0]!=gameBoard[clixyarr[0]][clixyarr[1]][0] && //not civil war
+		checkContingent(clixyarr[0],clixyarr[1],gameBoard[selected[0]][selected[1]][0] && //not jumping
+		gameBoard[selected[0]][selected[1]][0]==player)){ //self selected
 			//if our army is smaller or equal than theirs, compute; target-=armySize;attacker-=Armysize
 			if(armySize<=gameBoard[clixyarr[0]][clixyarr[1]][1]){gameBoard[clixyarr[0]][clixyarr[1]][1]-=armySize;gameBoard[selected[0]][selected[1]][1]-=armySize}
 			
 			else{
 			//if our army is bigger than theirs, compute and take over; attacker-=armySize; target=remainingArmy; capture
-			if(armySize>gameBoard[clixyarr[0]][clixyarr[1]][1]){gameBoard[selected[0]][selected[1]][1]-=armySize;gameBoard[clixyarr[0]][clixyarr[1]][1]=armySize-gameBoard[clixyarr[0]][clixyarr[1]][1];gameBoard[clixyarr[0]][clixyarr[1]][0]=gameBoard[selected[0]][selected[1]][0];}
+			if(armySize>gameBoard[clixyarr[0]][clixyarr[1]][1]){
+			  gameBoard[selected[0]][selected[1]][1]-=armySize
+			  gameBoard[clixyarr[0]][clixyarr[1]][1]=armySize-gameBoard[clixyarr[0]][clixyarr[1]][1]
+			  gameBoard[clixyarr[0]][clixyarr[1]][0]=gameBoard[selected[0]][selected[1]][0]
+			}
 			}
 		}
 		//if we are moving troops, but not the other player's, and we're not bluffing
-		else if(gameBoard[selected[0]][selected[1]][0]!=gameBoard[clixyarr[0]][clixyarr[1]][0] && armySize<=gameBoard[selected[0]][selected[1]][1]){
-		if(armySize<gameBoard[selected[0]][selected[1]][1] && gameBoard[selected[0]][selected[1]][0]==gameBoard[clixyarr[0]][clixyarr[1]][0]){
-		gameBoard[clixyarr[0]][clixyarr[1]][1]+=armySize
-		gameBoard[selected[0]][selected[1]][1]-=armySize
-		}
+		else if(gameBoard[selected[0]][selected[1]][0]==player && //self selected
+		armySize<=gameBoard[selected[0]][selected[1]][1] && //no bluff
+		gameBoard[selected[0]][selected[1]][0]==gameBoard[clixyarr[0]][clixyarr[1]][0]){ //internal movement
+				gameBoard[clixyarr[0]][clixyarr[1]][1]+=armySize
+				gameBoard[selected[0]][selected[1]][1]-=armySize
+		  }
 		}
 		selected=[selected[0],selected[1],0]
 	}
