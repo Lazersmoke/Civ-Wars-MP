@@ -10,26 +10,26 @@ console.log('Got: '+e.data+'\n')
 if(e.data=='sorry'){
 console.log('No availible slots\n')
 }
-if(e.data=='blue'){
+else if(e.data=='blue'){
 console.log('You are now blue team\n')
 document.getElementById('eytButton').style.color="blue"
 player=1
 }
-if(e.data=='red'){
+else if(e.data=='red'){
 console.log('You are now red team\n')
 document.getElementById('eytButton').style.color="red"
 player=2
 }
-if(e.data=='change'){
+else if(e.data=='change'){
 console.log('Team already Taken\n')
 }
-if(e.data=='movealong'){
+else if(e.data=='movealong'){
 console.log('OK, we proscessed your click\n')
 }
-if(e.data.slice(0,13)=='gameboardsize'){
+else if(e.data.slice(0,13)=='gameboardsize'){
 boardsize=[Number(e.data.slice(13,16)),Number(e.data.slice(16,19)),Number(e.data.slice(19,22))]
 }
-if(String(e.data).length>=boardsize[0]*boardsize[1]*boardsize[2]*4){
+else if(String(e.data).length>=boardsize[0]*boardsize[1]*boardsize[2]*4){
 var iteratorCat=0
 for(var x=0;x<boardsize[0];x++){for(var y=0;y<boardsize[1];y++){for(var z=0;z<boardsize[2];z++){
 gameBoard[x][y][z]=Number(String(e.data).slice(iteratorCat,iteratorCat+4))
@@ -38,7 +38,7 @@ iteratorCat+=4
 
 drawBoard();
 }
-if(e.data.slice(0,5)=='color'){
+else if(e.data.slice(0,5)=='color'){
   if(e.data.slice(4+player,5+player)==0){
     if(player==1){
       document.getElementById('eytButton').style.color="blue"
