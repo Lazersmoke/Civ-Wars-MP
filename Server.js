@@ -269,7 +269,7 @@ function interpretClick(clix,cliy,armySize,player){
 		if(armySize<gameBoard[selected[0]][selected[1]][1] && //no bluff
 		gameBoard[selected[0]][selected[1]][0]!=gameBoard[clixyarr[0]][clixyarr[1]][0] && //not civil war
 		checkContingent(clixyarr[0],clixyarr[1],player) && //not jumping
-		gameBoard[selected[0]][selected[1]][0]==player)){ //self selected
+		gameBoard[selected[0]][selected[1]][0]==player){ //self selected
 			//if our army is smaller or equal than theirs, compute; target-=armySize;attacker-=Armysize
 			if(armySize<=gameBoard[clixyarr[0]][clixyarr[1]][1]){
 				gameBoard[clixyarr[0]][clixyarr[1]][1]-=armySize
