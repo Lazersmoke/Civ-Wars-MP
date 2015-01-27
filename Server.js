@@ -133,7 +133,8 @@ wsServer.on('request', function(request) {
 		if          (String(gameBoard[x][y][z]).length==4){sendingData+=''+String(gameBoard[x][y][z])}
 		else if(String(gameBoard[x][y][z]).length==3){sendingData+='0'+String(gameBoard[x][y][z])}
 		else if(String(gameBoard[x][y][z]).length==2){sendingData+='00'+String(gameBoard[x][y][z])}
-		else{sendingData+='000'+String(gameBoard[x][y][z])}
+		else if(String(gameBoard[x][y][z]).length==1){sendingData+='000'+String(gameBoard[x][y][z])}
+		else{console.log("ERROR WRONG SIZE: '"+String(gameBoard[x][y][z])+"' ")}
 	      }}}
 	      connection.sendUTF(sendingData)
 	      
