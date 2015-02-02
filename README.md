@@ -1,7 +1,7 @@
 Civ-Wars-MP
 ===========
 
-Current Stable Version: v4.0.7-stable
+Current Stable Version: v5.0.0 AKA Project Revival
 
 How to play:
 
